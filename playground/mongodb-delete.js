@@ -2,6 +2,7 @@ const {MongoClient, ObjectID} = require('mongodb');
 
 const url = 'mongodb://localhost:27017/ToDoApp';
 const params = { useNewUrlParser: true };
+const collectionName = 'ToDos';
 
 MongoClient.connect(url, params, (err, client) => {
     if (err) {
@@ -10,41 +11,51 @@ MongoClient.connect(url, params, (err, client) => {
 
     const db = client.db('ToDoApp');
 
-    /*db.collection('ToDos').find({
-        _id: new ObjectID('5b6eb6d8ced1bb819b356628'),
+    db.collection(collectionName).insertMany([{
+        text: 'SomeRandomToDoText1',
         completed: false
-    }).toArray().then((docs) => {
-        console.log(JSON.stringify(docs, undefined, 2));
-    }, (err) => {
-        console.log('Failed to fetch documents', err);
-    });*/
-
-    /*db.collection('ToDos').find({
-       completed: false,
-    }).count().then((count) => {
-        console.log(`ToDos count: ${count}`);
-    }, (err) => {
-        console.log('Failed to fetch documents', err);
-    });*/
-
-    db.collection('Users').insertOne({
-        name: "Andres",
-        password: "Random Password",
-        username: "SomeRandomUsername"
-    }, (err, results) => {
-        if (err) {
-            throw new Error('Failed to insert new user into users');
-        }
-
-        console.log(JSON.stringify(results.ops, undefined, 2));
+    }, {
+        text: 'SomeRandomToDoText2',
+        completed: false
+    }, {
+        text: 'SomeRandomToDoText2',
+        completed: false
+    }, {
+        text: 'SomeRandomToDoText3',
+        completed: true
+    }])
+    .then((results) => {
+        console.log(JSON.stringify(results, undefined, 2));
     });
 
-    db.collection('Users').find({
-        name: 'Andres Orav',
-    }).toArray().then((docs) => {
-        console.log(JSON.stringify(docs, undefined, 2));
-    }, (err) => {
-        console.log('Failed to fetch documents', err);
+    // db.collection('ToDos').deleteMany({
+    //     text: 'SomeRandomToDoText'
+    // }).then((results) => {
+    //     console.log(JSON.stringify(results, undefined, 2));
+    // });
+
+    // db.collection(collectionName).deleteOne({
+    //     text: 'SomeRandomToDoText'
+    // }).then((results) => {
+    //     console.log(JSON.stringify(results, undefined, 2));
+    // });
+
+    // db.collection(collectionName).findOneAndDelete({
+    //     text: 'SomeRandomToDoText'
+    // }).then((results) => {
+    //     console.log(JSON.stringify(results, undefined, 2));
+    // });
+
+    db.collection(collectionName).deleteMany({
+        text: 'SomeRandomToDoText2'
+    }).then((results) => {
+        console.log(JSON.stringify(results, undefined, 2));
+    });
+
+    db.collection(collectionName).findOneAndDelete({
+        completed: true
+    }).then((results) => {
+        console.log(JSON.stringify(results, undefined, 2));
     });
 
     client.close();
