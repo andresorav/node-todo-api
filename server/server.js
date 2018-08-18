@@ -17,9 +17,9 @@ app.post('/todos', (req, res) => {
     });
 
     newToDo.save().then((doc) => {
-        res.send(doc);
+        res.status(201).send(doc);
     }).catch((err) => {
-        throw new Error('Failed to save todo');
+        res.status(400).send(err);
     });
 });
 
@@ -30,3 +30,5 @@ app.get('/todos', (req, res) => {
 app.listen(3000, () => {
     console.log('Server started');
 });
+
+module.exports = {app};
