@@ -110,9 +110,18 @@ describe('DELETE /todos/:id', () => {
       .delete(`/todos/${id}`)
       .expect(200)
       .expect((res) => {
-        expect(res.body.todo.text).toBe(todos[0].text);
+        expect(res.body.todo._id).toBe(id);
       })
-      .end(done);
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        ToDo.findById(id).then((todo) => {
+          expect(todo).toBeFalsy();
+          done();
+        }).catch((err) => console.log(err));
+      });
   });
 
   it('should return 404 if deleted todo is not found', (done) => {
