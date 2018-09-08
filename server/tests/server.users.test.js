@@ -19,6 +19,8 @@ describe('POST /users', () => {
       .send(userData)
       .expect(201)
       .expect((res) => {
+        expect(res.headers['x-auth']).toBeTruthy();
+        expect(res.body._id).toBeTruthy();
         expect(res.body.email).toBe(userData.email);
       })
       .end((err, res) => {
@@ -26,29 +28,36 @@ describe('POST /users', () => {
           return done(err);
         }
 
-        User.find({email: userData.email}).then((users) => {
-          expect(users.length).toBe(1);
-          expect(users[0].email).toBe(userData.email);
+        User.findOne({email: userData.email}).then((user) => {
+          expect(user).toBeTruthy();
+          expect(user.password).not.toBe(userData.password);
           done();
         }).catch((err) => done(err));
       })
   });
 
-  it('should not create user with invalid body data', (done) => {
+  it('should not create user with invalid data', (done) => {
+    let userData = {
+      email: 'some',
+      password: '123'
+    };
+
     request(app)
       .post('/users')
-      .send({})
+      .send(userData)
       .expect(400)
-      .end((err, res) => {
-        if (err) {
-          return done(err);
-        }
+      .end(done)
+  });
 
-        User.find().then((users) => {
-          expect(users.length).toBe(2);
-          done();
-        }).catch((err) => done(err));
+  it('should not create user with existing email', (done) => {
+    request(app)
+      .post('/users')
+      .send({
+        email: users[0].email,
+        password: users[0].password
       })
+      .expect(400)
+      .end(done)
   });
 });
 
