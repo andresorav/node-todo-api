@@ -96,3 +96,20 @@ describe('GET /users/me', () => {
       .end(done);
   });
 });
+
+describe('POST /users/login', () => {
+  it('should return user on success', (done) => {
+    request(app)
+      .post('/users/login')
+      .send({
+        email: users[0].email,
+        password: users[0].password
+      })
+      .expect(200)
+      .expect((res) => {
+        expect(res.body._id).toBe(users[0]._id.toHexString());
+        expect(res.body.email).toBe(users[0].email);
+      })
+      .end(done);
+  });
+});
