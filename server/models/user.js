@@ -43,7 +43,7 @@ UserSchema.methods.toJSON = function () {
 UserSchema.methods.generateAuthToken = function () {
   let user = this;
   let access = 'auth';
-  let token = jwt.sign({_id: user._id.toHexString(), access}, 'salt1234');
+  let token = jwt.sign({_id: user._id.toHexString(), access}, 'saltySalt12345');
 
   user.tokens = user.tokens.concat({
     access,
@@ -60,7 +60,7 @@ UserSchema.statics.findByToken = function (token) {
   let decoded;
 
   try {
-    decoded = jwt.verify(token, 'salt1234');
+    decoded = jwt.verify(token, 'saltySalt12345');
   } catch (err) {
     return Promise.reject('Invalid token');
   }

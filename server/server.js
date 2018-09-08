@@ -112,6 +112,14 @@ app.post('/users', (req, res) => {
     .catch((err) => res.status(400).send(err));
 });
 
+app.get('/users', (req, res) => {
+  User.find().then((users) => {
+    res.send({users});
+  }).catch((err) => {
+    res.status(400).send(err)
+  });
+});
+
 app.get('/users/me', authenticate, (req, res) => {
   res.send(req.user);
 });
